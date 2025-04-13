@@ -1,7 +1,7 @@
 # E-Commerce Sales Analysis and Prediction
 
 ## 📌 Project Overview
-This project focuses on analyzing and predicting **e-commerce sales** using **Microsoft Power BI** and **Machine Learning**. The goal is to extract actionable insights from sales data and develop a predictive model to forecast future trends.
+This project focuses on analyzing and predicting **e-commerce sales** using **Machine Learning**. The goal is to extract actionable insights from sales data and develop a predictive model to forecast future trends.
 
 ## 📊 Key Features
 - **Data Collection & Cleaning**: Preprocessing raw sales data, handling missing values, and ensuring data accuracy.
