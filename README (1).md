@@ -112,6 +112,4 @@ See `requirements.txt` for dependencies.
 - Model explainability (e.g., SHAP)
 - API for live predictions
 
-## 🧑‍💻 Author
 
-**Abanoub Emad**
