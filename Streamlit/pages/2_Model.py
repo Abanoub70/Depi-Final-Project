@@ -13,7 +13,7 @@ def convert_to_str(X):
     return X.astype(str)
 
 # Load the trained model
-model = pickle.load(open('D:\\Personal\\Streamlit\\Streamlit Part\\finalized_model.sav', 'rb'))
+model = pickle.load(open('Streamlit/finalized_model.sav', 'rb'))
 
 # App title
 st.title("📊 Sales Prediction App")
