@@ -13,8 +13,16 @@ def convert_to_str(X):
     return X.astype(str)
 
 
-# Load the trained model
-model = pickle.load(open('Streamlit/finalized_model.sav', 'rb'))
+import os
+import pickle
+
+# Get absolute path to the model file
+current_dir = os.path.dirname(os.path.abspath(__file__))  # This file's dir
+model_path = os.path.join(current_dir, '..', 'finalized_model.sav')  # Go up to parent dir if needed
+
+# Load the model safely
+with open(model_path, 'rb') as f:
+    model = pickle.load(f)
 
 # App title
 st.title("📊 Sales Prediction App")
