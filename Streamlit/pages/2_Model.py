@@ -12,6 +12,17 @@ from sklearn.preprocessing import OneHotEncoder
 def convert_to_str(X):
     return X.astype(str)
 
+import os
+import pickle
+
+# Get the absolute path to the directory of the current file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, 'finalized_model.sav')
+
+# Load the model
+with open(model_path, 'rb') as f:
+    model = pickle.load(f)
+
 # Load the trained model
 model = pickle.load(open('Streamlit/finalized_model.sav', 'rb'))
 
