@@ -2,15 +2,25 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import os
 
 # Load the data with caching
 @st.cache_data
 def load_data():
-    file = pd.read_csv('store.csv')
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, '..', 'data', 'store.csv')
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Dataset not found at {file_path}")
+    file = pd.read_csv(file_path)
     return file.sample(n=5000, random_state=42)
 
-
-df = load_data()
+# Load data
+try:
+    df = load_data()
+    st.success("Dataset loaded successfully!")
+except Exception as e:
+    st.error(f"Error loading dataset: {str(e)}")
+    st.stop()
 
 # Title
 st.title("📊 Data Exploration Dashboard")
@@ -41,6 +51,14 @@ if st.checkbox("📄 Show Data Table"):
 numerical_columns = df.select_dtypes(include=np.number).columns.to_list()
 categorical_columns = df.select_dtypes(include='object').columns.to_list()
 all_columns = df.columns.to_list()
+
+# Ensure non-empty lists for visualizations
+if not numerical_columns:
+    st.warning("No numerical columns found. Some visualizations may be unavailable.")
+    numerical_columns = all_columns[:1] if all_columns else []
+if not categorical_columns:
+    st.warning("No categorical columns found. Some visualizations may be unavailable.")
+    categorical_columns = all_columns[:1] if all_columns else []
 
 # Tabs for visualization types
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Scatter", "Histogram", "Box Plot", "Correlation Heatmap", "Bar Chart", "Pie Chart"])
