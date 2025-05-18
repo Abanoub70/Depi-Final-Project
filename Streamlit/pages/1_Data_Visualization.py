@@ -8,7 +8,7 @@ import os
 @st.cache_data
 def load_data():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, '..', 'data', 'store.csv')
+    file_path = os.path.join(current_dir, '..', 'store.csv')  # Path to Streamlit/store.csv
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Dataset not found at {file_path}")
     file = pd.read_csv(file_path)
