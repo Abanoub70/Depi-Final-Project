@@ -69,7 +69,7 @@ if st.button("Predict Sales"):
             input_data = pd.DataFrame([{
                 'StoreType': store_type,
                 'Assortment': assortment,
-                'CompetitionDistance': competition_distance,  # as string
+                'CompetitionDistance': competition_distance,
                 'CompetitionOpenSinceMonth': competition_month,
                 'CompetitionOpenSinceYear': competition_year,
                 'Promo2': promo2,
@@ -85,15 +85,15 @@ if st.button("Predict Sales"):
             st.markdown(
                 f"""
                 <div style='
-                    font-size: 48px; 
-                    font-weight: bold; 
-                    color: #2E8B57;  /* sea green */
-                    margin: 30px 0px 30px 0px; 
+                    font-size: 48px;
+                    font-weight: bold;
+                    color: #2E8B57;
+                    margin: 30px 0px 30px 0px;
                     text-align: center;
                     '>
                     Predicted Sales 🧠💡: {prediction[0]:,.2f}
                 </div>
-                """, 
+                """,
                 unsafe_allow_html=True
             )
         except Exception as e:
