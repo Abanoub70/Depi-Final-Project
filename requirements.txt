@@ -1,5 +1,6 @@
-streamlit==1.23.1
-pandas==1.4.4
-numpy==1.23.5
-scikit-learn==1.0.2
-# Add any other libraries used by your model
+streamlit
+pandas
+numpy
+seaborn
+matplotlib
+scikit-learn
