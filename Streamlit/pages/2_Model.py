@@ -31,7 +31,7 @@ else:
     except Exception as e:
         st.error(f"Error loading model: {str(e)}")
 
-# App title
+# App title efficace
 st.title("📊 Sales Prediction App")
 
 # Sidebar content
