@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+import joblib
+import os
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
@@ -12,20 +13,27 @@ from sklearn.preprocessing import OneHotEncoder
 def convert_to_str(X):
     return X.astype(str)
 
-
-import os
-import pickle
+# Set page config
+st.set_page_config(page_title="Sales Prediction App", page_icon="📊")
 
 # Get absolute path to the model file
-current_dir = os.path.dirname(os.path.abspath(__file__))  # This file's dir
-model_path = os.path.join(current_dir, '..', 'finalized_model.sav')  # Go up to parent dir if needed
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, '..', 'finalized_model.sav')
 
 # Load the model safely
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
+model = None
+if not os.path.exists(model_path):
+    st.error(f"Model file not found at {model_path}")
+else:
+    try:
+        model = joblib.load(model_path)
+        st.success("Model loaded successfully!")
+    except Exception as e:
+        st.error(f"Error loading model: {str(e)}")
 
 # App title
 st.title("📊 Sales Prediction App")
+
 # Sidebar content
 st.sidebar.header("🛠️ App Info")
 st.sidebar.info("""
@@ -34,8 +42,8 @@ Please fill in the store details in the form on the right, then click **Predict 
 """)
 
 st.write("📝 Fill in the store details to predict expected sales.")
-import streamlit as st
 
+# Input form
 col1, col2 = st.columns(2)
 
 with col1:
@@ -51,45 +59,42 @@ with col2:
     promo2_week = st.number_input("Promo2 Start Week", min_value=0, max_value=52, value=20)
     promo_interval = st.text_input("Promo Interval (e.g. Feb,May,Aug,Nov)", "Feb,May,Aug,Nov")
 
-
 # When the button is clicked
 if st.button("Predict Sales"):
-    try:
-        # Prepare the input data as a DataFrame
-        input_data = pd.DataFrame([{
-            'StoreType': store_type,
-            'Assortment': assortment,
-            'CompetitionDistance': competition_distance,  # as string
-            'CompetitionOpenSinceMonth': competition_month,
-            'CompetitionOpenSinceYear': competition_year,
-            'Promo2': promo2,
-            'Promo2SinceWeek': promo2_week,
-            'Promo2SinceYear': promo2_year,
-            'PromoInterval': promo_interval
-        }])
+    if model is None:
+        st.error("Cannot predict: Model not loaded successfully.")
+    else:
+        try:
+            # Prepare the input data as a DataFrame
+            input_data = pd.DataFrame([{
+                'StoreType': store_type,
+                'Assortment': assortment,
+                'CompetitionDistance': competition_distance,  # as string
+                'CompetitionOpenSinceMonth': competition_month,
+                'CompetitionOpenSinceYear': competition_year,
+                'Promo2': promo2,
+                'Promo2SinceWeek': promo2_week,
+                'Promo2SinceYear': promo2_year,
+                'PromoInterval': promo_interval
+            }])
 
-        # Make predictions with the model
-        prediction = model.predict(input_data)
+            # Make predictions with the model
+            prediction = model.predict(input_data)
 
-        # Display the predicted sales result
-        st.markdown(
-    f"""
-    <div style='
-        font-size: 48px; 
-        font-weight: bold; 
-        color: #2E8B57;  /* sea green */
-        margin: 30px 0px 30px 0px; 
-        text-align: center;
-        '>
-        Predicted Sales 🧠💡: {prediction[0]:,.2f}
-    </div>
-    """, 
-    unsafe_allow_html=True
-)
-
-    except Exception as e:
-        st.error(f"Prediction failed: {e}")
-
-
-
-
+            # Display the predicted sales result
+            st.markdown(
+                f"""
+                <div style='
+                    font-size: 48px; 
+                    font-weight: bold; 
+                    color: #2E8B57;  /* sea green */
+                    margin: 30px 0px 30px 0px; 
+                    text-align: center;
+                    '>
+                    Predicted Sales 🧠💡: {prediction[0]:,.2f}
+                </div>
+                """, 
+                unsafe_allow_html=True
+            )
+        except Exception as e:
+            st.error(f"Prediction failed: {str(e)}")
