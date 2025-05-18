@@ -12,12 +12,14 @@ def load_data():
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Dataset not found at {file_path}")
     file = pd.read_csv(file_path)
-    return file.sample(n=5000, random_state=42)
+    # Sample up to 5000 rows, or all rows if fewer are available
+    sample_size = min(5000, len(file))
+    return file.sample(n=sample_size, random_state=42, replace=False)
 
 # Load data
 try:
     df = load_data()
-    st.success("Dataset loaded successfully!")
+    st.success(f"Dataset loaded successfully! ({len(df)} rows)")
 except Exception as e:
     st.error(f"Error loading dataset: {str(e)}")
     st.stop()
@@ -87,36 +89,3 @@ with tab3:
     y = st.selectbox("Y Axis (numeric)", numerical_columns, key='box_y')
     x = st.selectbox("X Axis (categorical)", categorical_columns, key='box_x')
     box = px.box(df, x=x, y=y)
-    st.plotly_chart(box, use_container_width=True)
-
-# Correlation Heatmap
-with tab4:
-    st.header("🔥 Correlation Heatmap")
-    if len(numerical_columns) >= 2:
-        corr_matrix = df[numerical_columns].corr()
-        heatmap = px.imshow(
-            corr_matrix,
-            text_auto=True,
-            color_continuous_scale='RdBu_r',
-            title="Correlation Between Numerical Features"
-        )
-        st.plotly_chart(heatmap, use_container_width=True)
-    else:
-        st.warning("At least two numerical columns are required to show the heatmap.")
-
-# Bar Chart
-with tab5:
-    st.header("📶 Bar Chart")
-    cat_col = st.selectbox("Categorical Column", categorical_columns, key='bar_cat')
-    num_col = st.selectbox("Numeric Column (for aggregation)", numerical_columns, key='bar_num')
-    bar = px.bar(df, x=cat_col, y=num_col)
-    st.plotly_chart(bar, use_container_width=True)
-
-# Pie Chart
-with tab6:
-    st.header("🥧 Pie Chart")
-    pie_cat = st.selectbox("Category Column", categorical_columns, key='pie_cat')
-    pie_data = df[pie_cat].value_counts().reset_index()
-    pie_data.columns = [pie_cat, 'Count']
-    pie_chart = px.pie(pie_data, values='Count', names=pie_cat)
-    st.plotly_chart(pie_chart, use_container_width=True)
